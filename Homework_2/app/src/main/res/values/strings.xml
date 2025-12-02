@@ -8,8 +8,12 @@
     <string name="retry">Попробовать снова</string>
     <string name="error_occurred">Произошла ошибка</string>
     <string name="no_dogs_available">Нет доступных собак</string>
-    <string name="dog_number">Собака #%d</string>
     <string name="unknown_error">Неизвестная ошибка</string>
     <string name="network_error">Ошибка сети</string>
     <string name="empty_response">Пустой ответ от сервера</string>
+    <string name="download_dogs">Загрузка собачек...</string>
+    <string name="try_again">Попробовать снова</string>
+    <string name="download_more_dogs">Загрузка еще собачек...</string>
+    <string name="dog_number">Собака номер</string>
+    <string name="download_error">Ошибка при загрузке:</string>
 </resources>

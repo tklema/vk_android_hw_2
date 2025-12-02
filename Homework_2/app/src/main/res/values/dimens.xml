@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="rectangle_padding">8dp</dimen>
+    <dimen name="button_padding">8dp</dimen>
+    <dimen name="button_size">64dp</dimen>
+    <dimen name="list_bottom_padding">80dp</dimen>
+    <dimen name="button_radius">24dp</dimen>
+    <dimen name="button_elevation">4dp</dimen>
+    <dimen name="padding_error">16dp</dimen>
+    <dimen name="padding_text_error">12dp</dimen>
+    <dimen name="rounded_error">8dp</dimen>
+    <dimen name="spacer_height">8dp</dimen>
+    <dimen name="spaced_list">16dp</dimen>
+    <dimen name="padding_loading_more">16dp</dimen>
+</resources>

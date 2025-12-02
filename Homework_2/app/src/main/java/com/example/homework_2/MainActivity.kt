@@ -21,7 +21,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -35,7 +34,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -96,8 +97,8 @@ fun DogScreen(modifier: Modifier = Modifier) {
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier.weight(1f)
             ) {
-                Text("Загрузка собачек...")
-                CircularProgressIndicator(modifier = Modifier.padding(top = 8.dp))
+                Text(stringResource(R.string.download_dogs))
+                CircularProgressIndicator()
             }
         } else if (error != null && dogImages.isEmpty()) {
             Column(
@@ -108,28 +109,28 @@ fun DogScreen(modifier: Modifier = Modifier) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp)
-                        .clip(RoundedCornerShape(8.dp))
+                        .padding(dimensionResource(R.dimen.padding_error))
+                        .clip(RoundedCornerShape(dimensionResource(R.dimen.rounded_error)))
                         .background(colorResource(id = R.color.purple_700).copy(alpha = 0.75f)),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "⚠️ $error",
+                        text = "$error",
                         color = colorResource(id = R.color.white),
                         fontSize = 16.sp,
-                        modifier = Modifier.padding(12.dp)
+                        modifier = Modifier.padding(dimensionResource(R.dimen.padding_text_error))
                     )
                 }
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacer_height)))
                 Button(onClick = { viewModel.loadDogs() }) {
-                    Text("Попробовать снова")
+                    Text(stringResource(R.string.try_again))
                 }
             }
         } else {
             LazyColumn(
                 modifier = Modifier.weight(1f),
                 state = listState,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spaced_list))
             ) {
                 itemsIndexed(dogImages) { index, dog ->
                     DogImageItem(
@@ -147,10 +148,10 @@ fun DogScreen(modifier: Modifier = Modifier) {
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(16.dp)
+                                .padding(dimensionResource(R.dimen.padding_loading_more))
                         ) {
-                            Text("Загрузка еще собачек...")
-                            CircularProgressIndicator(modifier = Modifier.padding(top = 8.dp))
+                            Text(stringResource(R.string.download_more_dogs))
+                            CircularProgressIndicator()
                         }
                     }
                 }
@@ -168,13 +169,12 @@ fun DogImageItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() },
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            .clickable { onClick() }
     ) {
         Column {
             AsyncImage(
                 model = dog.url,
-                contentDescription = "Собака номер ${index + 1}",
+                contentDescription = stringResource(R.string.dog_number).plus(index + 1),
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(16f / 9f)
