@@ -1,10 +1,13 @@
 package com.example.homework_2.viewmodel
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.homework_2.client.RetrofitDog
 import com.example.homework_2.data.DogImage
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,12 +29,14 @@ class DogViewModel() : ViewModel() {
     private var canLoadMore = true
     private var isLoadingInProgress = false
 
-    init {
-        loadDogs()
-    }
-
     fun loadDogs() {
         if (isLoadingInProgress) return
+
+        if (cachedImages.isNotEmpty()) {
+            _dogImages.value = cachedImages
+            cachedImages = listOf()
+            return
+        }
 
         viewModelScope.launch {
             isLoadingInProgress = true
@@ -43,6 +48,7 @@ class DogViewModel() : ViewModel() {
 
                 if (response.isNotEmpty()) {
                     _dogImages.value = response
+                    saveToCache(response)
                     canLoadMore = true
                 } else {
                     _error.value = "Пустой ответ от API"
@@ -70,6 +76,7 @@ class DogViewModel() : ViewModel() {
                     val currentList = _dogImages.value.toMutableList()
                     currentList.addAll(response)
                     _dogImages.value = currentList
+                    saveToCache(currentList)
                 } else {
                     canLoadMore = false
                 }
@@ -89,5 +96,38 @@ class DogViewModel() : ViewModel() {
             "Собака #${imageIndex + 1}",
             android.widget.Toast.LENGTH_LONG
         ).show()
+    }
+
+    private lateinit var preferences: SharedPreferences
+    private lateinit var cachedImages: List<DogImage>
+    private val gson = Gson()
+    private val dogListType = object : TypeToken<List<DogImage>>() {}.type
+
+    companion object {
+        private const val PREFS_NAME = "DogImagesCache"
+        private const val KEY_CACHED_IMAGES = "cached_dog_images"
+    }
+
+    fun initialize(context: Context) {
+        createCache(context)
+        loadDogs()
+    }
+
+    fun createCache(context: Context) {
+        preferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val cachedJson = preferences.getString(KEY_CACHED_IMAGES, null)
+        cachedImages = gson.fromJson(cachedJson, dogListType) ?: listOf()
+    }
+
+    private fun saveToCache(images: List<DogImage>) {
+        viewModelScope.launch {
+            try {
+                val json = gson.toJson(images)
+                preferences.edit()
+                    .putString(KEY_CACHED_IMAGES, json)
+                    .apply()
+            } catch (e: Exception) {
+            }
+        }
     }
 }

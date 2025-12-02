@@ -72,6 +72,10 @@ fun DogScreen(modifier: Modifier = Modifier) {
     val error by viewModel.error.collectAsState()
     val context = LocalContext.current
 
+    LaunchedEffect(Unit) {
+        viewModel.initialize(context)
+    }
+
     val listState = rememberLazyListState()
 
     LaunchedEffect(listState.layoutInfo.visibleItemsInfo) {

@@ -7,7 +7,7 @@ import retrofit2.http.Query
 interface DogClient {
     @GET("v1/images/search")
     suspend fun getDog(
-        @Query("limit") limit: Int = 3
+        @Query("limit") limit: Int = 7
     ): List<DogImage>
 
     companion object {
